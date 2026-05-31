@@ -1099,7 +1099,7 @@ elif page == "🖼️ Image OCR":
         img_obj = Image.open(img_up)
         st.image(img_obj, caption="Uploaded Image", use_container_width=True)
 
-import easyocr
+
 
 if ocr_btn:
     if img_up:
@@ -1124,8 +1124,8 @@ if ocr_btn:
 
             except Exception as e:
                 st.error(f"OCR Error: {e}")
-        else:
-            st.warning("⚠️ Please upload an image first.")
+    else:
+		st.warning("⚠️ Please upload an image first.")
 
     if "ocr_res" in st.session_state:
         st.text_area("Detected Text", st.session_state["ocr_res"], height=400)
