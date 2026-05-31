@@ -651,23 +651,23 @@ def summarize_text(text, target_detail="High"):
             
             # Dynamic length settings based on user preference
             if target_detail == "Low":
-    		depth_instruction = "Provide a concise summary."
+    		         depth_instruction = "Provide a concise summary."
 
 			elif target_detail == "High":
-			    depth_instruction = """
-			    Provide a detailed summary.
-			    Cover all major concepts.
-			    Include examples.
-			    """
+			           depth_instruction = """
+					   Provide a detailed summary.
+					   Cover all major concepts.
+		               Include examples.
+					   """
 			
 			elif target_detail == "Extreme":
-			    depth_instruction = """
-			    Provide an exhaustive analysis.
-			    Explain every major topic.
-			    Include examples, applications,
-			    technical details and insights.
-			    Generate 1500-3000 words if content permits.
-			    """
+				       depth_instruction = """
+				       Provide an exhaustive analysis.
+				       Explain every major topic.
+				       Include examples, applications,
+				       technical details and insights.
+				       Generate 1500-3000 words if content permits.
+				       """
 
             summary_ids = model.generate(
                 inputs,
