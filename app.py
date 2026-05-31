@@ -1,5 +1,6 @@
 
 import streamlit as st
+import numpy as np
 import subprocess
 import sys
 import os
@@ -33,6 +34,8 @@ install_if_missing("streamlit-autorefresh", "streamlit_autorefresh")
 install_if_missing("gTTS", "gtts")
 install_if_missing("pillow", "PIL")
 install_if_missing("pytesseract", "pytesseract")
+install_if_missing("easyocr")
+install_if_missing("numpy")
 install_if_missing("PyMuPDF", "fitz")
 import fitz
 
@@ -1092,44 +1095,60 @@ elif page == "📺 YouTube Link":
 
 elif page == "🖼️ Image OCR":
     st.subheader("🖼️ Image Intelligence (OCR)")
-    img_up = st.file_uploader("Upload Screenshot or Document Photo", type=["png", "jpg", "jpeg"])
+
+    img_up = st.file_uploader(
+        "Upload Screenshot or Document Photo",
+        type=["png", "jpg", "jpeg"]
+    )
+
     ocr_btn = st.button("👁️ Scan & Summarize")
-    
+
     if img_up:
         img_obj = Image.open(img_up)
-        st.image(img_obj, caption="Uploaded Image", use_container_width=True)
+        st.image(
+            img_obj,
+            caption="Uploaded Image",
+            use_container_width=True
+        )
 
+    if ocr_btn:
+        if img_up:
+            with st.spinner("Extracting text from pixels..."):
+                try:
+                    img_obj = Image.open(img_up)
 
+                    reader = easyocr.Reader(['en'])
 
-if ocr_btn:
-    if img_up:
-        with st.spinner("Extracting text from pixels..."):
-            try:
-                img_obj = Image.open(img_up)
+                    result = reader.readtext(
+                        np.array(img_obj),
+                        detail=0
+                    )
 
-                reader = easyocr.Reader(['en'])
+                    ocr_text = " ".join(result)
 
-                result = reader.readtext(
-                    np.array(img_obj),
-                    detail=0
-                )
+                    if ocr_text.strip():
+                        st.session_state["ocr_res"] = ocr_text
+                        st.success("Text detected!")
+                    else:
+                        st.warning("No text found in image.")
 
-                ocr_text = " ".join(result)
+                except Exception as e:
+                    st.error(f"OCR Error: {e}")
 
-                if ocr_text.strip():
-                    st.session_state["ocr_res"] = ocr_text
-                    st.success("Text detected!")
-                else:
-                    st.warning("No text found in image.")
-
-            except Exception as e:
-                st.error(f"OCR Error: {e}")
-    else:
-		st.warning("⚠️ Please upload an image first.")
+        else:
+            st.warning("⚠️ Please upload an image first.")
 
     if "ocr_res" in st.session_state:
-        st.text_area("Detected Text", st.session_state["ocr_res"], height=400)
-        show_summary_view(st.session_state["ocr_res"], "image")
+        st.text_area(
+            "Detected Text",
+            st.session_state["ocr_res"],
+            height=400
+        )
+
+        show_summary_view(
+            st.session_state["ocr_res"],
+            "image"
+        )
 
 elif page == "🌍 Translator":
     st.subheader("🌍 Multi-Language AI Translator")
