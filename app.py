@@ -60,8 +60,13 @@ import pytesseract
 import streamlit.components.v1 as components
 from streamlit_autorefresh import st_autorefresh
 
-# Tesseract Configuration (Common Path - User may need to adjust)
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+import easyocr
+
+reader = easyocr.Reader(['en'])
+
+result = reader.readtext(img_obj)
+
+ocr_text = " ".join([item[1] for item in result])
 
 
 st.set_page_config(page_title="Ultra Summarizer AI", layout="wide", page_icon="✨")
