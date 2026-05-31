@@ -568,22 +568,53 @@ def summarize_text(text, target_detail="High"):
                     depth_instruction = "Provide an EXHAUSTIVE, TECHNICAL, and IN-DEPTH intelligence report. Analyze nuances, implications, and provide a master-level breakdown of all findings."
 
                 prompt = f"""
-                You are an expert technical analyst. I want you to provide a highly professional, clear, and structured summary of the following text.
-                Specific Requirement: {depth_instruction}
+				You are a senior researcher and expert content analyst.
 
-                Please use the following structure:
-                1. # 📄 [Catchy, Relevant Title]
-                2. ### 📝 Executive Overview
-                   [A high-level summary of the document]
-                3. ### 💎 Strategic Highlights
-                   [Key takeaways with bolded concepts]
-                4. ### 🔍 Professional Analysis
-                   [Detailed breakdown of main themes/findings. Use subheadings if depth is 'Detailed' or 'Expert'.]
-                5. ### 🏁 Actionable Conclusions
-                
-                Text to summarize:
-                {text[:30000]}
-                """
+				{depth_instruction}
+
+				Analyze the following YouTube transcript in detail.
+				
+				Generate:
+				
+				# 📄 Title
+				
+				## 📝 Executive Overview
+				Provide a detailed introduction of the video's purpose.
+				
+				## 🎯 Main Topics Covered
+				List all major topics discussed.
+				
+				## 📚 Detailed Topic Explanations
+				For each topic:
+				- Explain the concept
+				- Explain why it is important
+				- Mention examples discussed
+				- Mention practical applications
+				
+				## 💡 Key Insights
+				Provide important insights from the speaker.
+				
+				## 🔬 Technical Analysis
+				Explain any technical concepts in simple language.
+				
+				## 🚀 Real-World Applications
+				Describe how the information can be used in real life.
+				
+				## 📌 Important Takeaways
+				Provide 10-15 key takeaways.
+				
+				## 🏁 Conclusion
+				Write a comprehensive conclusion.
+				
+				IMPORTANT:
+				- Do not create short summaries.
+				- Explain each topic in detail.
+				- Generate at least 1000 words if enough transcript exists.
+				- Preserve important examples and explanations from the speaker.
+				
+				Transcript:
+				{text[:50000]}
+				"""
                 response = model_gemini.generate_content(prompt)
                 return response.text
             except Exception as e:
@@ -620,11 +651,23 @@ def summarize_text(text, target_detail="High"):
             
             # Dynamic length settings based on user preference
             if target_detail == "Low":
-                max_l, min_l = 150, 40
-            elif target_detail == "High":
-                max_l, min_l = 450, 80
-            else: # "Expert"
-                max_l, min_l = 850, 150
+    		depth_instruction = "Provide a concise summary."
+
+			elif target_detail == "High":
+			    depth_instruction = """
+			    Provide a detailed summary.
+			    Cover all major concepts.
+			    Include examples.
+			    """
+			
+			elif target_detail == "Extreme":
+			    depth_instruction = """
+			    Provide an exhaustive analysis.
+			    Explain every major topic.
+			    Include examples, applications,
+			    technical details and insights.
+			    Generate 1500-3000 words if content permits.
+			    """
 
             summary_ids = model.generate(
                 inputs,
