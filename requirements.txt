@@ -30,6 +30,7 @@ youtube-transcript-api
 # Image Processing & OCR
 pillow
 pytesseract
+easyocr
 
 # Streamlit extras
 streamlit-autorefresh
