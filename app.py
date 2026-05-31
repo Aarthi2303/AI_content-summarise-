@@ -654,11 +654,11 @@ def summarize_text(text, target_detail="High"):
     		         depth_instruction = "Provide a concise summary."
 
 			elif target_detail == "High":
-			          depth_instruction = """
-					  Provide a detailed summary.
-					  Cover all major concepts.
-		              Include examples.
-					  """
+			           depth_instruction = """
+					   Provide a detailed summary.
+					   Cover all major concepts.
+		               Include examples.
+					   """
 			
 			elif target_detail == "Extreme":
 				      depth_instruction = """
