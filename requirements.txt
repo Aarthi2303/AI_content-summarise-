@@ -14,6 +14,7 @@ scikit-learn
 PyPDF2
 python-docx
 PyMuPDF
+pycryptodome
 
 # Speech & Audio
 SpeechRecognition
