@@ -56,17 +56,12 @@ from youtube_transcript_api._errors import TranscriptsDisabled, NoTranscriptFoun
 from deep_translator import GoogleTranslator
 from gtts import gTTS
 from PIL import Image
-import pytesseract
+import easyocr
 import streamlit.components.v1 as components
 from streamlit_autorefresh import st_autorefresh
 
-import easyocr
 
-reader = easyocr.Reader(['en'])
 
-result = reader.readtext(img_obj)
-
-ocr_text = " ".join([item[1] for item in result])
 
 
 st.set_page_config(page_title="Ultra Summarizer AI", layout="wide", page_icon="✨")
@@ -1104,18 +1099,31 @@ elif page == "🖼️ Image OCR":
         img_obj = Image.open(img_up)
         st.image(img_obj, caption="Uploaded Image", use_container_width=True)
 
-    if ocr_btn:
-        if img_up:
-            with st.spinner("Extracting text from pixels..."):
-                try:
-                    img_obj = Image.open(img_up)
-                    ocr_text = pytesseract.image_to_string(img_obj)
-                    if ocr_text.strip():
-                        st.session_state["ocr_res"] = ocr_text
-                        st.success("Text detected!")
-                    else: st.warning("No text found in image.")
-                except Exception as e:
-                    st.error("Tesseract Error. Ensure Tesseract OCR is installed on the system.")
+import easyocr
+
+if ocr_btn:
+    if img_up:
+        with st.spinner("Extracting text from pixels..."):
+            try:
+                img_obj = Image.open(img_up)
+
+                reader = easyocr.Reader(['en'])
+
+                result = reader.readtext(
+                    np.array(img_obj),
+                    detail=0
+                )
+
+                ocr_text = " ".join(result)
+
+                if ocr_text.strip():
+                    st.session_state["ocr_res"] = ocr_text
+                    st.success("Text detected!")
+                else:
+                    st.warning("No text found in image.")
+
+            except Exception as e:
+                st.error(f"OCR Error: {e}")
         else:
             st.warning("⚠️ Please upload an image first.")
 
